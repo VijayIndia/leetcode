@@ -1,6 +1,16 @@
+package CommonForDirectedAndUndirectedGraph;
 
-public class DisjointSet{
+public class _1_Traversal_DisjointSet{
+    int n=10;
+    int rank[]=new int[n];
+    int root[]=new int[n];
 
+    _1_Traversal_DisjointSet(){
+        for(int i=0;i<n;i++){
+            rank[i]=1;
+            root[i]=i;
+        }
+    }
     private boolean union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
