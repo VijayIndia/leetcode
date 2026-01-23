@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Queue;
 
 class _1_Traversal_TopologicalSorting_bfs {
-    public List<Integer> topologicalSorting_bfs_edgeList(List<List<Integer>> edgesList,int n){
+
+    public List<Integer> topologicalSorting_bfs_edgeList_and_adjList(List<List<Integer>> edgesList,int n){
         int incomingDegree[]=new int[n];
         boolean visited[]=new boolean[n];
-        List<List<Integer>> adjList = new ArrayList<>();
         Queue<Integer> q = new LinkedList<>();
         List<Integer> resultList = new ArrayList<>();
+
+        /** Step1 : Convert edgeList to adjList **/
+        List<List<Integer>> adjList = new ArrayList<>();
 
         for(int i=0;i<n;i++){
             adjList.add(new ArrayList<>());
@@ -22,6 +25,7 @@ class _1_Traversal_TopologicalSorting_bfs {
             adjList.get(edgesList.get(i).get(0)).add(edgesList.get(i).get(1));
         }
 
+        /** Step 2 : **/
         for(int i=0;i<n;i++){
             if(incomingDegree[i]==0){
                 q.add(i);
@@ -44,35 +48,47 @@ class _1_Traversal_TopologicalSorting_bfs {
         }
         return resultList;
     }
-    public void topologicalSorting_bfs_adjList(List<List<Integer>> adjList,int n){
-        int incomingEdgeCounter[]=new int[n];
-        for(int i=0;i<n;i++) {
-            for(int v:adjList.get(i)){
-                incomingEdgeCounter[v]++;
-            }
-        }
 
-        // Now we have incomingEdgeCounter and adjList , now same logic as topologicalSorting_bfs_edgeList
-    }
-
-    public void topologicalSorting_adjMatrix(int matrix[][], int n){
-        // Build adjList
+    /**
+     * When adjMatrix is given , its usually because its dense graph , so try to use it directly instead of converting to adjList
+     * @param matrix
+     * @param n
+     */
+    public List<Integer> topologicalSorting_adjMatrix(int matrix[][], int n){
         // Build Incoming Edge counter
-        int incomingEdgeCounter[]=new int[n];
+        int incomingDegree[]=new int[n];
+        Queue<Integer> q = new LinkedList<>();
+        List<Integer> resultList = new ArrayList<>();
 
-        List<List<Integer>> adjList = new ArrayList<>();
-        for(int i=0;i<n;i++){
-            adjList.add(new ArrayList<>());
-        }
+
         for(int row=0;row<matrix.length;row++){
             for(int col=0;col<matrix[0].length;col++) {
                 if(matrix[row][col]==1) {
-                    adjList.get(row).add(col);
-                    incomingEdgeCounter[col]++;
+                    incomingDegree[col]++;
                 }
             }
         }
-        // Reuse topologicalSorting_bfs_edgeList logic
+
+        /** Step 2 : **/
+        for(int i=0;i<n;i++){
+            if(incomingDegree[i]==0){
+                q.add(i);
+            }
+        }
+
+        while(!q.isEmpty()){
+            int rowIndex=q.poll();
+            resultList.add(rowIndex);
+            for(int colIndex=0;colIndex<matrix[rowIndex].length;colIndex++){
+                if(matrix[rowIndex][colIndex]!=0){
+                    incomingDegree[colIndex]--;
+                    if(incomingDegree[colIndex]==0){
+                        q.add(colIndex);
+                    }
+                }
+            }
+        }
+        return resultList;
     }
 
     /**
